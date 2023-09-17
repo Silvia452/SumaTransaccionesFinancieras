@@ -20,12 +20,12 @@ public class ProcesadorContabilidad implements Runnable {
             e.printStackTrace();
         }
 
-        //Guardar el resultado en el archivo
+        //Guardar el resultado en archivo
         String resultadoArchivo = archivo + ".res";
         try (PrintWriter pw = new PrintWriter(new FileWriter(resultadoArchivo))) {
             pw.println(sumaDepartamento);
         } catch (IOException e) {
-            //Excepción de escritura
+            // Maneja el caso en el que no se pueda escribir el resultado
             e.printStackTrace();
         }
     }
