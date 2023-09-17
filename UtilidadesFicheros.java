@@ -25,9 +25,12 @@ public class UtilidadesFicheros {
 
 
     public static void guardarResultado(String archivo, long resultado) throws IOException {
-        try (FileWriter fw = new FileWriter(archivo + ".res")) {
+        // Eliminar la extensión ".txt" del nombre del archivo
+        String nombreResultado = archivo.replaceFirst("\\.txt$", ".txt.res");
+        try (FileWriter fw = new FileWriter(nombreResultado)) {
             fw.write(Long.toString(resultado));
         }
     }
+
 }
 

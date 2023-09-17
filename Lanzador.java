@@ -25,9 +25,10 @@ public class Lanzador {
         long sumaGlobal = 0;
         for (String archivo : archivos) {
             try {
-                long sumaDepartamento = UtilidadesFicheros.sumarTransacciones(archivo + ".res");
+                String archivoResultado = archivo + ".res"; // Nombre del archivo de resultado
+                long sumaDepartamento = UtilidadesFicheros.sumarTransacciones(archivoResultado);
                 sumaGlobal += sumaDepartamento;
-                System.out.println("Suma para " + archivo + ": " + sumaDepartamento);
+                System.out.println("Suma para " + archivoResultado + ": " + sumaDepartamento);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -42,3 +43,4 @@ public class Lanzador {
         }
     }
 }
+
