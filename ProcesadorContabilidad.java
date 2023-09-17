@@ -1,5 +1,9 @@
 import java.io.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class ProcesadorContabilidad implements Runnable {
     private String archivo;
 
@@ -9,24 +13,28 @@ public class ProcesadorContabilidad implements Runnable {
 
     @Override
     public void run() {
-        long sumaDepartamento = 0;
+        long suma = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                long transaccion = Long.parseLong(linea);
-                sumaDepartamento += transaccion;
+                if (!linea.isEmpty()) {
+                    try {
+                        suma += Long.parseLong(linea);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error en línea no válida en " + archivo + ": " + linea);
+                    }
+                }
             }
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo " + archivo + ": " + e.getMessage());
         }
 
-        //Guardar el resultado en archivo
-        String resultadoArchivo = archivo + ".res";
-        try (PrintWriter pw = new PrintWriter(new FileWriter(resultadoArchivo))) {
-            pw.println(sumaDepartamento);
+        try {
+            UtilidadesFicheros.guardarResultado(archivo, suma);
+            System.out.println("Resultado para " + archivo + ": " + suma);
         } catch (IOException e) {
-            // Maneja el caso en el que no se pueda escribir el resultado
-            e.printStackTrace();
+            System.err.println("Error al guardar el resultado de " + archivo + ": " + e.getMessage());
         }
     }
 }
+

@@ -2,18 +2,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class Lanzador {
-    public static void main (String[] args) {
-        String[] archivos = { "informatica.txt", "gerencia.txt", "contabilidad.txt", "comercio.txt", "recursos_humanos.txt"};
+import java.io.IOException;
 
-        //Ahora creamos los hilos para cada archivo
+public class Lanzador {
+    public static void main(String[] args) {
+        String[] archivos = { "informatica.txt", "gerencia.txt", "contabilidad.txt", "comercio.txt", "recursos_humanos.txt" };
         Thread[] threads = new Thread[archivos.length];
+
         for (int i = 0; i < archivos.length; i++) {
             threads[i] = new Thread(new ProcesadorContabilidad(archivos[i]));
             threads[i].start();
         }
 
-        //Esperar a que todos los hilos terminen
         for (Thread thread : threads) {
             try {
                 thread.join();
@@ -22,15 +22,23 @@ public class Lanzador {
             }
         }
 
-        //Sumar todas las sumas de departamentos
-        long sumaGlobal = UtilidadesFicheros.sumarTransacciones(archivos);
+        long sumaGlobal = 0;
+        for (String archivo : archivos) {
+            try {
+                long sumaDepartamento = UtilidadesFicheros.sumarTransacciones(archivo + ".res");
+                sumaGlobal += sumaDepartamento;
+                System.out.println("Suma para " + archivo + ": " + sumaDepartamento);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-        //Guardar resultado global
-        try (PrintWriter pw = new PrintWriter(new FileWriter("Resultado_global.txt"))) {
-            pw.println(sumaGlobal);
+        // Guardar resultado global
+        try {
+            UtilidadesFicheros.guardarResultado("Resultado_global.txt", sumaGlobal);
+            System.out.println("Suma global guardada en Resultado_global.txt");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

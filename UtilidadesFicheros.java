@@ -5,22 +5,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class UtilidadesFicheros {
-    public static long sumarTransacciones(String[] archivos) {
-        long sumaTotal = 0;
-        for (String archivo : archivos) {
-            try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-                String linea;
-                while ((linea = br.readLine()) != null) {
-                    long transaccion = Long.parseLong(linea);
-                    sumaTotal += transaccion;
+    public static long sumarTransacciones(String archivo) throws IOException {
+        long suma = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                if (!linea.isEmpty() && linea.matches("^\\d+$")) {
+                    suma += Long.parseLong(linea);
+                } else {
+                    // Maneja el caso en el que la línea no sea numérica o esté vacía
+                    System.err.println("Error en línea no válida en " + archivo + ": " + linea);
                 }
-            } catch (IOException | NumberFormatException e) {
-                // Manejar excepciones de lectura y formato aquí
-                e.printStackTrace();
             }
         }
-        return sumaTotal;
+        return suma;
     }
+
 
 
 
